@@ -36,26 +36,26 @@ test('testing Gameboard Class Ship Placement with 0 degree orientation', () => {
   const gameboard1 = new Gameboard();
   const realShip = new Ship(8);
   gameboard1.placeShips(8, 8, 0, realShip);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, '8,8'], [realShip, '9,8'], [realShip, '10,8'], [realShip, '11,8'], [realShip, '12,8'], [realShip, '13,8'], [realShip, '14,8'], [realShip, '15,8']]);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8,8], [realShip, 9,8], [realShip, 10,8], [realShip, 11,8], [realShip, 12,8], [realShip, 13,8], [realShip, 14,8], [realShip, 15,8]]);
 });
 
 test('testing Gameboard Class Ship Placement with 90 degree orientation', () => {
   const gameboard1 = new Gameboard();
   const realShip = new Ship(5);
   gameboard1.placeShips(1, 1, 90, realShip);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, '1,1'], [realShip, '1,2'], [realShip, '1,3'], [realShip, '1,4'], [realShip, '1,5']]);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 1,1], [realShip, 1,2], [realShip, 1,3], [realShip, 1,4], [realShip, 1,5]]);
 });
 
 test('testing Gameboard Class Ship Placement with 180 degree orientation', () => {
   const gameboard1 = new Gameboard();
   const realShip = new Ship(8);
   gameboard1.placeShips(8, 8, 180, realShip);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, '8,8'], [realShip, '7,8'], [realShip, '6,8'], [realShip, '5,8'], [realShip, '4,8'], [realShip, '3,8'], [realShip, '2,8'], [realShip, '1,8']]);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8,8], [realShip, 7,8], [realShip, 6,8], [realShip, 5,8], [realShip, 4,8], [realShip, 3,8], [realShip, 2,8], [realShip, 1,8]]);
 });
 
 test('testing Gameboard Class Ship Placement with 270 degree orientation', () => {
   const gameboard1 = new Gameboard();
   const realShip = new Ship(5);
   gameboard1.placeShips(8, 8, 270, realShip);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, '8,8'], [realShip, '8,7'], [realShip, '8,6'], [realShip, '8,5'], [realShip, '8,4']]);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8,8], [realShip, 8,7], [realShip, 8,6], [realShip, 8,5], [realShip, 8,4]]);
 });
