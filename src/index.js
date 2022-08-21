@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const DEG_TO_RAD_CONST = Math.PI / 180;
 
 export class Ship {
@@ -49,8 +50,9 @@ export class Gameboard {
   // }
 
   // receives coordinates the ship wants to occupy in an array. Format is [shipObject,x,y]
+  // returns array of coordinates that are no go. Meaning no other object can be placed upon there
   // eslint-disable-next-line class-methods-use-this
-  noGoCoordinatesCalculator(newCoordinates) {
+  static noGoCoordinatesCalculator(newCoordinates) {
     const NoGoCoordinates = [];
     for (let i = 0; i < newCoordinates.length; i += 1) {
       const tempArray = [
@@ -67,6 +69,20 @@ export class Gameboard {
       NoGoCoordinates.push(...tempArray);
     }
     return NoGoCoordinates;
+  }
+
+  // takes in array. If array has duplicates xy values it removes them
+  static removeDuplicatesCoordinates(coordinates) {
+    for (let i = 0; i < coordinates.length; i += 1) {
+      for (let l = 1 + i; l < coordinates.length; l += 1) {
+        if (JSON.stringify(coordinates[i]) === JSON.stringify(coordinates[l])) { // if found a copy, overwrite it
+          // eslint-disable-next-line no-param-reassign
+          coordinates[l] = null;
+        }
+      }
+    }
+    const filteredCoordinates = coordinates.filter((element) => element != null);
+    return filteredCoordinates;
   }
 
   // generates all ship coordinates. Return array with all coordinates
@@ -88,8 +104,13 @@ export class Gameboard {
 
   // places ship on board. Returns an error if not possible
   placeShips(xInit, yInit, orientation, shipObject) {
-    let shipSpotCoodinates = [];
-    shipSpotCoodinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject);
-    this.hitPlaces = this.hitPlaces.concat(Array.from(shipSpotCoodinates));
+    const shipSpotCoordinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject);
+    const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates);
+    this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates);
+    this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(shipNoGoCoordinates);
   }
 }
+
+const gameboard1 = new Gameboard();
+const realShip = new Ship(2);
+gameboard1.placeShips(8, 8, 90, realShip);
