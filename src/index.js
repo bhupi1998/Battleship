@@ -85,6 +85,16 @@ export class Gameboard {
     return filteredCoordinates;
   }
 
+  // takes in 2 arrays. It looks for elements in common. If found it returns -1, indicating a match
+  // !issue. ship coordinates are saved as ship,x,y and no go are stored as just x,y
+  static findCoordinateConflict(shipCoordinates, NoGoCoordinates) {
+    let result;
+    for (let i = 0; i < shipCoordinates.length; i += 1) {
+      result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
+    }
+    return result;
+  }
+
   // generates all ship coordinates. Return array with all coordinates
   // covered by the ship
   static shipCoordinateGenerator(xInitial, yInitial, orientation, shipObject) {
@@ -103,14 +113,24 @@ export class Gameboard {
   }
 
   // places ship on board. Returns an error if not possible
+  // Steps:
+  // 1 generate ship coordinates
+  // ensure ship is withing area
+  // 2 ensure ship can be placed by comparing to existing no go coordinates
+  // 3 generate all no go coordinates
   placeShips(xInit, yInit, orientation, shipObject) {
-    const shipSpotCoordinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject);
-    const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates);
-    this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates);
-    this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(shipNoGoCoordinates);
+    const shipSpotCoordinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject); // generate all coordinates the ship will be placed on
+    const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates); // generate all the boundaries around the ship
+    // Check if placement is allowed
+    if (Gameboard.findCoordinateConflict(shipSpotCoordinates, this.globalNoGoCoordinates) !== undefined) { return 'Error! Position not allowed'; }
+    this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates); // adding ship coordinates to hit array
+    this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(Gameboard.removeDuplicatesCoordinates(shipNoGoCoordinates)); // adding all nogo/ship boundary coordinates to nogoCoordinates array
+    return 1; // success. Ship has been placed
   }
 }
 
 const gameboard1 = new Gameboard();
 const realShip = new Ship(2);
+const shipInWrongSpot = new Ship(1);
 gameboard1.placeShips(8, 8, 90, realShip);
+gameboard1.placeShips(8, 8, 90, shipInWrongSpot);
