@@ -1,5 +1,5 @@
-/* eslint-disable max-len */
-import { Ship, Gameboard } from './src/index';
+import Ship from './src/shipObj';
+import Gameboard from './src/gameboardObj';
 
 test('testing constructor function of class ship', () => {
   const realShip = new Ship(5);
