@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 const DEG_TO_RAD_CONST = Math.PI / 180;
+const GRID_SIZE = 10;
 
 export class Ship {
   constructor(length) {
@@ -86,13 +87,17 @@ export class Gameboard {
   }
 
   // takes in 2 arrays. It looks for elements in common. If found it returns -1, indicating a match
-  // !issue. ship coordinates are saved as ship,x,y and no go are stored as just x,y
   static findCoordinateConflict(shipCoordinates, NoGoCoordinates) {
     let result;
     for (let i = 0; i < shipCoordinates.length; i += 1) {
       result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
     }
     return result;
+  }
+
+  // checks if ship placement is withing grid area
+  static coordinateInGridCheck(gridSize, shipCoordinates) {
+    return shipCoordinates.every((element) => element[1] <= gridSize && element[1] >= 0 && element[2] <= gridSize && element[2] >= 0);
   }
 
   // generates all ship coordinates. Return array with all coordinates
@@ -123,6 +128,7 @@ export class Gameboard {
     const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates); // generate all the boundaries around the ship
     // Check if placement is allowed
     if (Gameboard.findCoordinateConflict(shipSpotCoordinates, this.globalNoGoCoordinates) !== undefined) { return 'Error! Position not allowed'; }
+    if (!Gameboard.coordinateInGridCheck(GRID_SIZE, shipSpotCoordinates)) { return 'Error! Position not in grid'; }
     this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates); // adding ship coordinates to hit array
     this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(Gameboard.removeDuplicatesCoordinates(shipNoGoCoordinates)); // adding all nogo/ship boundary coordinates to nogoCoordinates array
     return 1; // success. Ship has been placed

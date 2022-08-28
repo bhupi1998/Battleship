@@ -35,9 +35,9 @@ test('testing hit function. Expecting the ship to not be sunk after 5 hits', () 
 
 test('testing Gameboard Class Ship Placement with 0 degree orientation', () => {
   const gameboard1 = new Gameboard();
-  const realShip = new Ship(8);
+  const realShip = new Ship(3);
   gameboard1.placeShips(8, 8, 0, realShip);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8, 8], [realShip, 9, 8], [realShip, 10, 8], [realShip, 11, 8], [realShip, 12, 8], [realShip, 13, 8], [realShip, 14, 8], [realShip, 15, 8]]);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8, 8], [realShip, 9, 8], [realShip, 10, 8]]);
 });
 
 test('testing Gameboard Class Ship Placement with 90 degree orientation', () => {
@@ -109,4 +109,10 @@ test('check if ship position is within grid', () => {
   const shipInWrongSpot = new Ship(1);
   gameboard1.placeShips(8, 8, 90, realShip);
   expect(gameboard1.placeShips(8, 8, 90, shipInWrongSpot)).toMatch(/Error! Position not allowed/);
+});
+
+test('check is ship is within grid', () =>{
+  const gameboard1 = new Gameboard();
+  const realShip = new Ship(2);
+  expect(gameboard1.placeShips(33, 33, 90, realShip)).toMatch(/Error! Position not in grid/);
 });
