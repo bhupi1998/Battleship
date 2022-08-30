@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import Ship from './src/shipObj';
 import Gameboard from './src/gameboardObj';
 
@@ -13,22 +14,19 @@ test('testing isSunk function. Expecting a false (not sunk)', () => {
 
 test('testing hit function. Expecting the ship to be sunk after 5 hits', () => {
   const realShip = new Ship(5);
-  realShip.hit = 0;
-  realShip.hit = 1;
-  realShip.hit = 2;
-  realShip.hit = 3;
-  realShip.hit = 4;
+  realShip.hit();
+  realShip.hit();
+  realShip.hit();
+  realShip.hit();
+  realShip.hit();
 
   expect(realShip.isSunk()).toBe(true);
 });
 
 test('testing hit function. Expecting the ship to not be sunk after 5 hits', () => {
   const realShip = new Ship(5);
-  realShip.hit = 0;
-  realShip.hit = 1;
-  realShip.hit = 2;
-  realShip.hit = 3;
-  realShip.hit = 3;
+  realShip.hit();
+  realShip.hit();
 
   expect(realShip.isSunk()).toBe(false);
 });
