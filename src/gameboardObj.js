@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import Ship from './shipObj';
+
 const DEG_TO_RAD_CONST = Math.PI / 180;
 const GRID_SIZE = 10;
 
@@ -6,14 +8,9 @@ class Gameboard {
   constructor() {
     this.hitPlaces = []; // this array contains all the spots where ships are located
     this.globalNoGoCoordinates = []; // contains all coordinates where another ship cannot be placed
+    this.missedShots = [];
     // Ships need to be withing grid, 1 block away from other ships and cannot overlap other ships
   }
-
-  // if the new coordinates are not already present and are 1 block away from already placed ships
-  // then the new elements are added, else false is returned.
-  // validatePosition(newCoordinates) {
-
-  // }
 
   // receives coordinates the ship wants to occupy in an array. Format is [shipObject,x,y]
   // returns array of coordinates that are no go. Meaning no other object can be placed upon there
@@ -51,11 +48,19 @@ class Gameboard {
     return filteredCoordinates;
   }
 
-  // takes in 2 arrays. It looks for elements in common. If found it returns -1, indicating a match
+  // takes in 2 arrays. It looks for elements in common. If found it returns the match, else undefined is returned
+  // 2 different comparison paths it can take to accomodate different array storage styles.
   static findCoordinateConflict(shipCoordinates, NoGoCoordinates) {
     let result;
-    for (let i = 0; i < shipCoordinates.length; i += 1) {
-      result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
+    if (shipCoordinates.length < 1 || NoGoCoordinates.length < 1) { return undefined; }
+    if (shipCoordinates[0].length === 3 && NoGoCoordinates[0].length === 2) {
+      for (let i = 0; i < shipCoordinates.length; i += 1) {
+        result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
+      }
+    } else if (shipCoordinates.length[0] === 2 && NoGoCoordinates[0].length === 3) {
+      for (let i = 0; i < shipCoordinates.length; i += 1) {
+        result = NoGoCoordinates.find((element) => JSON.stringify([element[0], element[1]]) === JSON.stringify([shipCoordinates[i][0], shipCoordinates[i][1]]));
+      }
     }
     return result;
   }
@@ -88,7 +93,8 @@ class Gameboard {
   // ensure ship is withing area
   // 2 ensure ship can be placed by comparing to existing no go coordinates
   // 3 generate all no go coordinates
-  placeShips(xInit, yInit, orientation, shipObject) {
+  placeShips(xInit, yInit, orientation, shipLength) {
+    const shipObject = new Ship(shipLength);
     const shipSpotCoordinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject); // generate all coordinates the ship will be placed on
     const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates); // generate all the boundaries around the ship
     // Check if placement is allowed
@@ -96,8 +102,22 @@ class Gameboard {
     if (!Gameboard.coordinateInGridCheck(GRID_SIZE, shipSpotCoordinates)) { return 'Error! Position not in grid'; }
     this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates); // adding ship coordinates to hit array
     this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(Gameboard.removeDuplicatesCoordinates(shipNoGoCoordinates)); // adding all nogo/ship boundary coordinates to nogoCoordinates array
-    return 1; // success. Ship has been placed
+    return shipObject; // success. Ship has been placed
+  }
+
+  // TODO: make receive attack function
+  // takes in a pair of coordinates. See if any thing was hit. If it was it causes the ship to take damage.
+  // if nothing is hit it's recorded as a missed shot.
+  receiveAttack(shotX, shotY) {
+    // reusing findCoordinateConflict to check if shot hit something
+    const shotResult = Gameboard.findCoordinateConflict([shotX, shotY], this.hitPlaces);
+    if (shotResult === -1) { return true; }
+    return false;
   }
 }
+
+const gameboard1 = new Gameboard();
+gameboard1.placeShips(8, 8, 90, 2);
+expect(gameboard1.placeShips(8, 8, 90, 1)).toMatch(/Error! Position not allowed/);
 
 export default Gameboard;
