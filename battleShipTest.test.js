@@ -107,11 +107,11 @@ test('check is ship is within grid', () => {
 });
 
 // test receiveAttack function
-// expecting a true, meaning something got hit.
+// expecting received value to be object.
 test('check if ship got hit', () => {
   const gameboard1 = new Gameboard();
   gameboard1.placeShips(8, 8, 90, 2);
-  expect(gameboard1.receiveAttack(8, 8)).toBe(true);
+  expect(gameboard1.receiveAttack(8, 8)).toBeInstanceOf(Object);
 });
 
 // test recevieAttack function with missed shot
@@ -122,4 +122,34 @@ test('nothing has been hit', () => {
   expect(gameboard1.receiveAttack(3, 8)).toBe(false);
   expect(gameboard1.receiveAttack(4, 8)).toBe(false);
   expect(gameboard1.missedShots).toStrictEqual([[3, 8], [4, 8]]);
+});
+
+// test recevieAttack function sunk ship
+// expecting function to return false and missed shot array to be updated with the coordinates
+test('testing if ship sunk', () => {
+  const gameboard1 = new Gameboard();
+  gameboard1.placeShips(8, 8, 90, 2);
+  expect(gameboard1.receiveAttack(3, 8)).toBe(false);
+  expect(gameboard1.receiveAttack(4, 8)).toBe(false);
+  expect(gameboard1.missedShots).toStrictEqual([[3, 8], [4, 8]]);
+});
+
+// report if all ships have been sunk
+// expecting true as ships should be sunk
+test('all ship are dead', () => {
+  const gameboard1 = new Gameboard();
+  gameboard1.placeShips(8, 8, 90, 2);
+  gameboard1.receiveAttack(8, 8);
+  gameboard1.receiveAttack(8, 9);
+  expect(gameboard1.gameOver()).toBe(true); // all ship are dead
+});
+
+// report if all ships have been sunk
+// expecting false as ships should not be sunk
+test('all ship are not dead', () => {
+  const gameboard1 = new Gameboard();
+  gameboard1.placeShips(8, 8, 90, 2);
+  gameboard1.receiveAttack(8, 8);
+  gameboard1.receiveAttack(8, 7);
+  expect(gameboard1.gameOver()).toBe(false); // all ship are not dead
 });

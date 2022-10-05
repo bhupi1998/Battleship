@@ -57,10 +57,8 @@ class Gameboard {
       for (let i = 0; i < shipCoordinates.length; i += 1) {
         result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
       }
-    } else if (shipCoordinates.length[0] === 2 && NoGoCoordinates[0].length === 3) {
-      for (let i = 0; i < shipCoordinates.length; i += 1) {
-        result = NoGoCoordinates.find((element) => JSON.stringify([element[0], element[1]]) === JSON.stringify([shipCoordinates[i][0], shipCoordinates[i][1]]));
-      }
+    } else if (shipCoordinates.length === 2 && NoGoCoordinates[0].length === 3) {
+      result = NoGoCoordinates.find((element) => JSON.stringify([element[1], element[2]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
     }
     return result;
   }
@@ -108,16 +106,33 @@ class Gameboard {
   // TODO: make receive attack function
   // takes in a pair of coordinates. See if any thing was hit. If it was it causes the ship to take damage.
   // if nothing is hit it's recorded as a missed shot.
+  // if hit return true
+  // if not hit return false
   receiveAttack(shotX, shotY) {
     // reusing findCoordinateConflict to check if shot hit something
     const shotResult = Gameboard.findCoordinateConflict([shotX, shotY], this.hitPlaces);
-    if (shotResult === -1) { return true; }
+    // ship hit, take life away from ship
+    if (shotResult !== undefined) {
+      shotResult[0].hit();
+      return shotResult[0];
+    } // ship was hit :(
+    // if not hit, add to missed shots array and return false
+    this.missedShots.push([shotX, shotY]);
     return false;
+  }
+
+  // check for gameover
+  // takes in a shipArray, passing the global hit place array in this case.
+  // ship array format is [[shipObj,x,y],[shipOb, x2, y2]]
+  gameOver() {
+    return this.hitPlaces.every((element) => element[0].isSunk() === true);
   }
 }
 
 const gameboard1 = new Gameboard();
 gameboard1.placeShips(8, 8, 90, 2);
-expect(gameboard1.placeShips(8, 8, 90, 1)).toMatch(/Error! Position not allowed/);
+gameboard1.receiveAttack(8, 8);
+gameboard1.receiveAttack(8, 7);
+gameboard1.gameOver();
 
 export default Gameboard;

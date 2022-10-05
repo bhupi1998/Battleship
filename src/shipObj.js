@@ -15,7 +15,7 @@ class Ship {
   // if ship is sunk this returns true
   // returns the ship status
   isSunk() {
-    if (!this.alive) { return true; } // is it's sunk no need to go through loops
+    if (!this.alive) { return true; }
     return false;
   }
 }
