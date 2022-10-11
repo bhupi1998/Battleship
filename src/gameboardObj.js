@@ -9,6 +9,7 @@ class Gameboard {
     this.hitPlaces = []; // this array contains all the spots where ships are located
     this.globalNoGoCoordinates = []; // contains all coordinates where another ship cannot be placed
     this.missedShots = [];
+    this.allReceivedShots = [];
     // Ships need to be withing grid, 1 block away from other ships and cannot overlap other ships
   }
 
@@ -49,7 +50,8 @@ class Gameboard {
   }
 
   // takes in 2 arrays. It looks for elements in common. If found it returns the match, else undefined is returned
-  // 2 different comparison paths it can take to accomodate different array storage styles.
+  // 3 different comparison paths it can take to accomodate different array storage styles.
+  // !should stick to one to avoid this mess in the future.
   static findCoordinateConflict(shipCoordinates, NoGoCoordinates) {
     let result;
     if (shipCoordinates.length < 1 || NoGoCoordinates.length < 1) { return undefined; }
@@ -59,13 +61,28 @@ class Gameboard {
       }
     } else if (shipCoordinates.length === 2 && NoGoCoordinates[0].length === 3) {
       result = NoGoCoordinates.find((element) => JSON.stringify([element[1], element[2]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
+    } else if (shipCoordinates.length === 2 && NoGoCoordinates[0].length === 2) {
+      result = NoGoCoordinates.find((element) => JSON.stringify([element[0], element[1]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
     }
     return result;
   }
 
   // checks if ship placement is withing grid area
+  // return true if all coordinates is withing grid
+  // takes in grid size as a single integer and ship coordinates as [[object, x, y]]
   static coordinateInGridCheck(gridSize, shipCoordinates) {
     return shipCoordinates.every((element) => element[1] <= gridSize && element[1] >= 0 && element[2] <= gridSize && element[2] >= 0);
+  }
+
+  // takes in x y coordinate of attack
+  // verify that attack is within coordinates
+  // verify that attack location has not been attacked before
+  isAttackLegal(X, Y) {
+    if (!Gameboard.coordinateInGridCheck(GRID_SIZE, [[Object, X, Y]])) { return false; }
+    if (Gameboard.findCoordinateConflict([X, Y], this.allReceivedShots) !== undefined) { // not undefined result means a match has been found and the coordinates have already been attacked
+      return false;
+    }
+    return true;
   }
 
   // generates all ship coordinates. Return array with all coordinates
@@ -109,6 +126,10 @@ class Gameboard {
   // if hit return true
   // if not hit return false
   receiveAttack(shotX, shotY) {
+    // verify attack legality
+
+    // adding coordinate to array that keeps track of all received shots
+    this.allReceivedShots.push([shotX, shotY]);
     // reusing findCoordinateConflict to check if shot hit something
     const shotResult = Gameboard.findCoordinateConflict([shotX, shotY], this.hitPlaces);
     // ship hit, take life away from ship

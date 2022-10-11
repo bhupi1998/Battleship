@@ -153,3 +153,18 @@ test('all ship are not dead', () => {
   gameboard1.receiveAttack(8, 7);
   expect(gameboard1.gameOver()).toBe(false); // all ship are not dead
 });
+
+// checking isAttackLegal function which verifies is coordinates are valid
+// checking if attack is within grid, expecting a true
+test('attack in grid', () => {
+  const gameboard1 = new Gameboard();
+  expect(gameboard1.isAttackLegal(3, 3)).toBe(true);
+});
+
+// checking isAttackLegal function which verifies is coordinates are valid
+// illegal attack in same spot
+test('double attack in same coordinates', () => {
+  const gameboard1 = new Gameboard();
+  gameboard1.receiveAttack(3, 3);
+  expect(gameboard1.isAttackLegal(3, 3)).toBe(false);
+});
