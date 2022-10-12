@@ -10,6 +10,7 @@ class Gameboard {
     this.globalNoGoCoordinates = []; // contains all coordinates where another ship cannot be placed
     this.missedShots = [];
     this.allReceivedShots = [];
+    this.gridSize = GRID_SIZE;
     // Ships need to be withing grid, 1 block away from other ships and cannot overlap other ships
   }
 
@@ -78,9 +79,9 @@ class Gameboard {
   // verify that attack is within coordinates
   // verify that attack location has not been attacked before
   isAttackLegal(X, Y) {
-    if (!Gameboard.coordinateInGridCheck(GRID_SIZE, [[Object, X, Y]])) { return false; }
+    if (!Gameboard.coordinateInGridCheck(GRID_SIZE, [[Object, X, Y]])) { return 'NOT_IN_GRID'; }
     if (Gameboard.findCoordinateConflict([X, Y], this.allReceivedShots) !== undefined) { // not undefined result means a match has been found and the coordinates have already been attacked
-      return false;
+      return 'COORDINATE_USED_PREVIOUSLY';
     }
     return true;
   }
@@ -127,7 +128,10 @@ class Gameboard {
   // if not hit return false
   receiveAttack(shotX, shotY) {
     // verify attack legality
-
+    const attackLegality = this.isAttackLegal(shotX, shotY);
+    if (attackLegality !== true) { // if attack is not legal return the error.
+      return attackLegality;
+    }
     // adding coordinate to array that keeps track of all received shots
     this.allReceivedShots.push([shotX, shotY]);
     // reusing findCoordinateConflict to check if shot hit something
@@ -149,11 +153,5 @@ class Gameboard {
     return this.hitPlaces.every((element) => element[0].isSunk() === true);
   }
 }
-
-const gameboard1 = new Gameboard();
-gameboard1.placeShips(8, 8, 90, 2);
-gameboard1.receiveAttack(8, 8);
-gameboard1.receiveAttack(8, 7);
-gameboard1.gameOver();
 
 export default Gameboard;

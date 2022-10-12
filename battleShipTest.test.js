@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import Ship from './src/shipObj';
 import Gameboard from './src/gameboardObj';
+import Player from './src/playerObj';
 
 test('testing constructor function of class ship', () => {
   const realShip = new Ship(5);
@@ -166,5 +167,37 @@ test('attack in grid', () => {
 test('double attack in same coordinates', () => {
   const gameboard1 = new Gameboard();
   gameboard1.receiveAttack(3, 3);
-  expect(gameboard1.isAttackLegal(3, 3)).toBe(false);
+  expect(gameboard1.isAttackLegal(3, 3)).not.toBe(true);
+});
+
+// testing receiveAttack() with attack legality check
+// expecting NOT_IN_GRID error
+test('shot is not in grid', () => {
+  const gameboard1 = new Gameboard();
+  expect(gameboard1.receiveAttack(20, 20)).toMatch(/NOT_IN_GRID/);
+});
+
+// testing receiveAttack() with attack legality check
+// expecting COORDINATE_USED_PREVIOUSLY
+test('shot is not in grid', () => {
+  const gameboard1 = new Gameboard();
+  gameboard1.receiveAttack(8, 8);
+  expect(gameboard1.receiveAttack(8, 8)).toMatch(/COORDINATE_USED_PREVIOUSLY/);
+});
+
+// testing player computerPlay function
+// expecting legal moves
+test('shot is not in grid', () => {
+  const gameboard1 = new Gameboard();
+  let pcCoordinates = Player.computerPlay(gameboard1);
+  expect(pcCoordinates[0]).toBeGreaterThanOrEqual(0);
+  expect(pcCoordinates[1]).toBeGreaterThanOrEqual(0);
+  expect(pcCoordinates[0]).toBeLessThanOrEqual(gameboard1.gridSize);
+  expect(pcCoordinates[1]).toBeLessThanOrEqual(gameboard1.gridSize);
+
+  pcCoordinates = Player.computerPlay(gameboard1);
+  expect(pcCoordinates[0]).toBeGreaterThanOrEqual(0);
+  expect(pcCoordinates[1]).toBeGreaterThanOrEqual(0);
+  expect(pcCoordinates[0]).toBeLessThanOrEqual(gameboard1.gridSize);
+  expect(pcCoordinates[1]).toBeLessThanOrEqual(gameboard1.gridSize);
 });
