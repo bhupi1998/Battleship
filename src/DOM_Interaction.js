@@ -1,3 +1,16 @@
+// finds xy coordinates given a block number and grid size
+function xyCoordinateIdentifier(gridSize, gridBlockNum) {
+  let remainder = gridBlockNum;
+  let x = 0;
+  let y = 0;
+  do {
+    remainder -= gridSize;
+    if (remainder >= 0) { x += 1; }
+  } while (remainder >= 0);
+  if (remainder < 0) { remainder += gridSize; }
+  y = remainder;
+  return [gridSize - x - 1, y];
+}
 // takes in a grid size and creates a grid in the body element
 function createGrid(gridSize) {
   // creating grid
@@ -20,6 +33,7 @@ function createGrid(gridSize) {
   gridElementArray.forEach((gridBlock) => {
     gridBlock.addEventListener('click', (e) => {
       console.log(e.target.getAttribute('data-gridElementNum'));
+      console.log(xyCoordinateIdentifier(gridSize, e.target.getAttribute('data-gridElementNum')));
     });
   });
 }
