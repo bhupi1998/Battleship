@@ -2,6 +2,7 @@
 import Ship from './src/shipObj';
 import Gameboard from './src/gameboardObj';
 import Player from './src/playerObj';
+import domInteractions from './src/DOM_Interaction';
 
 test('testing constructor function of class ship', () => {
   const realShip = new Ship(5);
@@ -200,4 +201,23 @@ test('shot is not in grid', () => {
   expect(pcCoordinates[1]).toBeGreaterThanOrEqual(0);
   expect(pcCoordinates[0]).toBeLessThanOrEqual(gameboard1.gridSize);
   expect(pcCoordinates[1]).toBeLessThanOrEqual(gameboard1.gridSize);
+});
+
+// testing xy coordinate finder function
+// expecting xy coordinates when given a block id #
+test('find xy coordinates', () => {
+  expect(domInteractions.xyCoordinateIdentifier(5, 20)).toStrictEqual([0, 0]);
+  expect(domInteractions.xyCoordinateIdentifier(5, 5)).toStrictEqual([0, 3]);
+  expect(domInteractions.xyCoordinateIdentifier(5, 0)).toStrictEqual([0, 4]);
+  expect(domInteractions.xyCoordinateIdentifier(5, 24)).toStrictEqual([4, 0]);
+});
+
+// testing block id # finder function
+// expecting a block id# when coordinates are passed
+test("find block#", () => {
+  expect(domInteractions.findBlockId(6, 2, 0)).toBe(32);
+  expect(domInteractions.findBlockId(6, 2, 2)).toBe(20);
+  expect(domInteractions.findBlockId(6, 4, 5)).toBe(4);
+  expect(domInteractions.findBlockId(10, 9, 9)).toBe(9);
+  expect(domInteractions.findBlockId(10, 4, 8)).toBe(14);
 });
