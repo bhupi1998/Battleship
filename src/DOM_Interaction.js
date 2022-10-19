@@ -5,16 +5,13 @@ function findBlockId(gridSize, x, y) {
   return blockNum;
 }
 // finds xy coordinates given a block number and grid size
+// coordinate system is y up and x right.
+// need to subtract y from gridSize to convert
+//  measurement to y up instead of y down.
+// blocks start from 0 at top left.
 function xyCoordinateIdentifier(gridSize, gridBlockNum) {
-  let remainder = gridBlockNum;
-  let x = 0;
-  let y = 0;
-  do {
-    remainder -= gridSize;
-    if (remainder >= 0) { y += 1; }
-  } while (remainder >= 0);
-  if (remainder < 0) { remainder += gridSize; }
-  x = remainder;
+  const y = Math.floor(gridBlockNum / gridSize);
+  const x = gridBlockNum - (gridSize * y);
   return [x, gridSize - y - 1];
 }
 // takes in a grid size and creates a grid in the body element
