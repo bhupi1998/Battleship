@@ -16,7 +16,7 @@ class Player {
     do {
       randomX = Math.floor((Math.random()) * (opponentGameboard.gridSize + 1));
       randomY = Math.floor((Math.random()) * (opponentGameboard.gridSize + 1));
-      shotOutcome = opponentGameboard.receiveAttack(randomX, randomY);
+      shotOutcome = opponentGameboard.isAttackLegal(randomX, randomY);
     } while (shotOutcome === 'COORDINATE_USED_PREVIOUSLY' || shotOutcome === 'NOT_IN_GRID');
     return [randomX, randomY];
   }

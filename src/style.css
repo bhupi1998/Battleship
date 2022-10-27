@@ -16,3 +16,9 @@ html{
   background-color: aqua;
   border: black;
 }
+
+body{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}

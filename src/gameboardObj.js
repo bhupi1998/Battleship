@@ -72,7 +72,7 @@ class Gameboard {
   // return true if all coordinates is withing grid
   // takes in grid size as a single integer and ship coordinates as [[object, x, y]]
   static coordinateInGridCheck(gridSize, shipCoordinates) {
-    return shipCoordinates.every((element) => element[1] <= gridSize && element[1] >= 0 && element[2] <= gridSize && element[2] >= 0);
+    return shipCoordinates.every((element) => element[1] < gridSize && element[1] >= 0 && element[2] < gridSize && element[2] >= 0);
   }
 
   // takes in x y coordinate of attack
@@ -123,9 +123,9 @@ class Gameboard {
 
   // TODO: make receive attack function
   // takes in a pair of coordinates. See if any thing was hit. If it was it causes the ship to take damage.
-  // if nothing is hit it's recorded as a missed shot.
+  // if nothing is hit it's recorded as a missed shot and false is returned
   // if hit return true
-  // if not hit return false
+  // if error has occured it returns the error such as "COORDINATE_USED_PREVIOUSLY"
   receiveAttack(shotX, shotY) {
     // verify attack legality
     const attackLegality = this.isAttackLegal(shotX, shotY);

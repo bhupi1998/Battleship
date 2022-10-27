@@ -35,8 +35,8 @@ test('testing hit function. Expecting the ship to not be sunk after 5 hits', () 
 
 test('testing Gameboard Class Ship Placement with 0 degree orientation', () => {
   const gameboard1 = new Gameboard();
-  const realShip = gameboard1.placeShips(8, 8, 0, 3);
-  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 8, 8], [realShip, 9, 8], [realShip, 10, 8]]);
+  const realShip = gameboard1.placeShips(6, 8, 0, 3);
+  expect(gameboard1.hitPlaces).toStrictEqual([[realShip, 6, 8], [realShip, 7, 8], [realShip, 8, 8]]);
 });
 
 test('testing Gameboard Class Ship Placement with 90 degree orientation', () => {
