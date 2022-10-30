@@ -11,6 +11,7 @@ class Gameboard {
     this.missedShots = [];
     this.allReceivedShots = [];
     this.gridSize = GRID_SIZE;
+    this.shipLengths = [5, 4, 3, 3, 2];
     // Ships need to be withing grid, 1 block away from other ships and cannot overlap other ships
   }
 
@@ -18,9 +19,10 @@ class Gameboard {
   // returns array of coordinates that are no go. Meaning no other object can be placed upon there
   // eslint-disable-next-line class-methods-use-this
   static noGoCoordinatesCalculator(newCoordinates) {
-    const NoGoCoordinates = [];
+    const noGoCoordinates = [];
+    let tempArray;
     for (let i = 0; i < newCoordinates.length; i += 1) {
-      const tempArray = [
+      tempArray = [
         [newCoordinates[i][1] - 1, newCoordinates[i][2] - 1],
         [newCoordinates[i][1], newCoordinates[i][2] - 1],
         [newCoordinates[i][1] + 1, newCoordinates[i][2] - 1],
@@ -31,9 +33,9 @@ class Gameboard {
         [newCoordinates[i][1], newCoordinates[i][2] + 1],
         [newCoordinates[i][1] + 1, newCoordinates[i][2] + 1],
       ];
-      NoGoCoordinates.push(...tempArray);
+      noGoCoordinates.push(...tempArray);
     }
-    return NoGoCoordinates;
+    return noGoCoordinates;
   }
 
   // takes in array. If array has duplicates xy values it removes them
@@ -53,17 +55,21 @@ class Gameboard {
   // takes in 2 arrays. It looks for elements in common. If found it returns the match, else undefined is returned
   // 3 different comparison paths it can take to accomodate different array storage styles.
   // !should stick to one to avoid this mess in the future.
-  static findCoordinateConflict(shipCoordinates, NoGoCoordinates) {
+  static findCoordinateConflict(shipCoordinates, noGoCoordinates) {
     let result;
-    if (shipCoordinates.length < 1 || NoGoCoordinates.length < 1) { return undefined; }
-    if (shipCoordinates[0].length === 3 && NoGoCoordinates[0].length === 2) {
+    if (shipCoordinates.length < 1 || noGoCoordinates.length < 1) { return undefined; }
+    if (shipCoordinates[0].length === 3 && noGoCoordinates[0].length === 2) {
+      // !it doesn't stooop, just overwrites it the next loop.........
       for (let i = 0; i < shipCoordinates.length; i += 1) {
-        result = NoGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
+        result = noGoCoordinates.find((element) => JSON.stringify(element) === JSON.stringify([shipCoordinates[i][1], shipCoordinates[i][2]]));
+        if (result !== undefined) {
+          break;
+        }
       }
-    } else if (shipCoordinates.length === 2 && NoGoCoordinates[0].length === 3) {
-      result = NoGoCoordinates.find((element) => JSON.stringify([element[1], element[2]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
-    } else if (shipCoordinates.length === 2 && NoGoCoordinates[0].length === 2) {
-      result = NoGoCoordinates.find((element) => JSON.stringify([element[0], element[1]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
+    } else if (shipCoordinates.length === 2 && noGoCoordinates[0].length === 3) {
+      result = noGoCoordinates.find((element) => JSON.stringify([element[1], element[2]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
+    } else if (shipCoordinates.length === 2 && noGoCoordinates[0].length === 2) {
+      result = noGoCoordinates.find((element) => JSON.stringify([element[0], element[1]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
     }
     return result;
   }
@@ -103,6 +109,40 @@ class Gameboard {
     return tempArray;
   }
 
+  // generates an angle between 0 and 270 at 90 degree increments
+  static randomAngle() {
+    let toReturn = 0;
+    const angle = Math.floor(Math.random() * 4);
+    switch (angle) {
+      case 0: toReturn = 0;
+        break;
+      case 1: toReturn = 90;
+        break;
+      case 2: toReturn = 180;
+        break;
+      case 3: toReturn = 270;
+        break;
+      default: toReturn = 0;
+    }
+    return toReturn;
+  }
+
+  // places ships automatically in a random order
+  autoPlaceShips() {
+    this.shipLengths.map((shipLength) => {
+      let shipPlaceStatus = 0;
+      let x = 0;
+      let y = 0;
+      let theta = 0;
+      do {
+        x = Math.floor(Math.random() * this.gridSize);
+        y = Math.floor(Math.random() * this.gridSize);
+        theta = Gameboard.randomAngle();
+        shipPlaceStatus = this.placeShips(x, y, theta, shipLength); // returns an object if ship can be placed
+      } while (typeof shipPlaceStatus !== 'object');
+    });
+  }
+
   // places ship on board. Returns an error if not possible
   // Steps:
   // 1 generate ship coordinates
@@ -114,7 +154,8 @@ class Gameboard {
     const shipSpotCoordinates = Gameboard.shipCoordinateGenerator(xInit, yInit, orientation, shipObject); // generate all coordinates the ship will be placed on
     const shipNoGoCoordinates = Gameboard.noGoCoordinatesCalculator(shipSpotCoordinates); // generate all the boundaries around the ship
     // Check if placement is allowed
-    if (Gameboard.findCoordinateConflict(shipSpotCoordinates, this.globalNoGoCoordinates) !== undefined) { return 'Error! Position not allowed'; }
+    const coordinateConflictCheck = Gameboard.findCoordinateConflict(shipSpotCoordinates, this.globalNoGoCoordinates);
+    if (coordinateConflictCheck !== undefined) { return 'Error! Position not allowed'; }
     if (!Gameboard.coordinateInGridCheck(GRID_SIZE, shipSpotCoordinates)) { return 'Error! Position not in grid'; }
     this.hitPlaces = this.hitPlaces.concat(shipSpotCoordinates); // adding ship coordinates to hit array
     this.globalNoGoCoordinates = this.globalNoGoCoordinates.concat(Gameboard.removeDuplicatesCoordinates(shipNoGoCoordinates)); // adding all nogo/ship boundary coordinates to nogoCoordinates array

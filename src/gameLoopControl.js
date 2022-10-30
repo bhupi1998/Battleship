@@ -36,7 +36,10 @@ class battlefieldGameControl {
     // player1Gameboard.placeShips(0, 0, 0, 6);
     // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
 
-    player2Gameboard.placeShips(4, 4, 270, 5);
+    //player2Gameboard.placeShips(4, 4, 270, 5);
+    player2Gameboard.autoPlaceShips();
+    //player2Gameboard.placeShips(4, 4, 0, 3);
+    //console.log(player2Gameboard.placeShips(4, 3, 90, 4));
     domHandler.placeShipOngrid(player2Gameboard, player2, GRID_SIZE);
   }
 
@@ -44,6 +47,7 @@ class battlefieldGameControl {
     // creating grid
     // creating all player and gameboard objects
     // would like to let user select
+
     const player1 = new PlayerObj('player1');
     const player2 = new PlayerObj('player2');
     const player1Gameboard = new Gameboard();
@@ -89,7 +93,7 @@ class battlefieldGameControl {
               console.log(`Player is dead: ${player1BoardObj.gameOver()}`);
             } else {
               console.log('Game Over');
-              this.setGameOver(1); // !not working
+              this.setGameOver(1);
             }
           }
           return 0;
