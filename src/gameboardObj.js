@@ -66,6 +66,7 @@ class Gameboard {
           break;
         }
       }
+    // these are only used when looking for one coordinate in an array, NOT multiple
     } else if (shipCoordinates.length === 2 && noGoCoordinates[0].length === 3) {
       result = noGoCoordinates.find((element) => JSON.stringify([element[1], element[2]]) === JSON.stringify([shipCoordinates[0], shipCoordinates[1]]));
     } else if (shipCoordinates.length === 2 && noGoCoordinates[0].length === 2) {

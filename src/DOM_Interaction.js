@@ -34,18 +34,21 @@ function createGrid(gridSize, playerObj) {
     const gridElement = document.createElement('grid');
     gridElement.classList.add('gridElement');
     gridElement.setAttribute('data-grid_element_num', `${i}`);
-    gridElement.innerHTML = `${i}`;
+    // gridElement.innerHTML = `${i}`;
     grid.appendChild(gridElement);
   }
 }
 
-function placeShipOngrid(playerGameboard, playerObj, gridSize) {
+// show ship used to select if ships should be visible
+function placeShipOngrid(playerGameboard, playerObj, gridSize, showShip) {
   for (let i = 0; i < playerGameboard.hitPlaces.length; i += 1) {
     // eslint-disable-next-line max-len
     const gridBlockId = findBlockId(gridSize, playerGameboard.hitPlaces[i][1], playerGameboard.hitPlaces[i][2]);
     const gridContainer = document.getElementById(`${playerObj.name}`);
     const gridBlock = gridContainer.querySelector(`[data-grid_element_num = "${gridBlockId}"]`);
-    gridBlock.style.backgroundColor = 'purple';
+    if (showShip) {
+      gridBlock.style.backgroundColor = 'purple';
+    }
   }
 }
 

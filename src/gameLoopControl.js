@@ -22,25 +22,14 @@ class battlefieldGameControl {
     // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
 
     player1Gameboard.placeShips(5, 6, 90, 2);
-    domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
+    player1Gameboard.placeShips(3, 3, 90, 2);
+    player1Gameboard.placeShips(1, 8, 90, 2);
+    player1Gameboard.placeShips(8, 0, 90, 7);
+    player1Gameboard.placeShips(0, 0, 0, 6);
+    domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE, 1);
 
-    // player1Gameboard.placeShips(3, 3, 90, 2);
-    // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
-
-    // player1Gameboard.placeShips(1, 8, 90, 2);
-    // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
-
-    // player1Gameboard.placeShips(8, 0, 90, 7);
-    // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
-
-    // player1Gameboard.placeShips(0, 0, 0, 6);
-    // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
-
-    //player2Gameboard.placeShips(4, 4, 270, 5);
     player2Gameboard.autoPlaceShips();
-    //player2Gameboard.placeShips(4, 4, 0, 3);
-    //console.log(player2Gameboard.placeShips(4, 3, 90, 4));
-    domHandler.placeShipOngrid(player2Gameboard, player2, GRID_SIZE);
+    domHandler.placeShipOngrid(player2Gameboard, player2, GRID_SIZE, 0);
   }
 
   game(GRID_SIZE) {
