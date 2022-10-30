@@ -21,11 +21,12 @@ class battlefieldGameControl {
     // player1Gameboard.placeShips(8, 8, 90, 2);
     // domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE);
 
-    player1Gameboard.placeShips(5, 6, 90, 2);
-    player1Gameboard.placeShips(3, 3, 90, 2);
-    player1Gameboard.placeShips(1, 8, 90, 2);
-    player1Gameboard.placeShips(8, 0, 90, 7);
-    player1Gameboard.placeShips(0, 0, 0, 6);
+    // player1Gameboard.placeShips(5, 6, 90, 2);
+    // player1Gameboard.placeShips(3, 3, 90, 2);
+    // player1Gameboard.placeShips(1, 8, 90, 2);
+    // player1Gameboard.placeShips(8, 0, 90, 7);
+    // player1Gameboard.placeShips(0, 0, 0, 6);
+    player1Gameboard.autoPlaceShips();
     domHandler.placeShipOngrid(player1Gameboard, player1, GRID_SIZE, 1);
 
     player2Gameboard.autoPlaceShips();
@@ -75,11 +76,9 @@ class battlefieldGameControl {
           const userAction = battlefieldGameControl.userTurn(player2Obj, player2BoardObj, e, gridSize);
           // if user action is legal then allow pc to move on. Otherwise wait until a valid input
           if ((typeof userAction === 'object') || (userAction === false)) {
-            console.log(`PC is dead: ${player2BoardObj.gameOver()}`);
             // Pc turn now if it's not gameover
             if (!player2BoardObj.gameOver()) {
               battlefieldGameControl.pcTurn(player1Obj, player1BoardObj, gridSize);
-              console.log(`Player is dead: ${player1BoardObj.gameOver()}`);
             } else {
               console.log('Game Over');
               this.setGameOver(1);
