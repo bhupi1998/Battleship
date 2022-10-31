@@ -80,7 +80,7 @@ class battlefieldGameControl {
             if (!player2BoardObj.gameOver()) {
               battlefieldGameControl.pcTurn(player1Obj, player1BoardObj, gridSize);
             } else {
-              console.log('Game Over');
+              alert('Game Over');
               this.setGameOver(1);
             }
           }
